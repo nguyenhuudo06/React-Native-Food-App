@@ -1,10 +1,17 @@
-import { View, Text, SafeAreaView, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import React from "react";
 import Spacing from "@/constants/Spacing";
 import FontSize from "@/constants/FontSize";
 import Colors from "@/constants/Colors";
 import { TextInput } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router"; // Sử dụng router để điều hướng
 
 const Register = () => {
@@ -177,30 +184,9 @@ const Register = () => {
                   size={Spacing * 2}
                 />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  padding: Spacing,
-                  backgroundColor: Colors.gray,
-                  borderRadius: Spacing / 2,
-                  marginHorizontal: Spacing,
-                }}
-              >
-                <Ionicons
-                  name="logo-facebook"
-                  color={Colors.text}
-                  size={Spacing * 2}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  padding: Spacing,
-                  backgroundColor: Colors.gray,
-                  borderRadius: Spacing / 2,
-                  marginHorizontal: Spacing,
-                }}
-              >
-                <Ionicons
-                  name="logo-github"
+              <TouchableOpacity style={styles.socialButton}>
+                <FontAwesome5
+                  name="facebook-square"
                   color={Colors.text}
                   size={Spacing * 2}
                 />
@@ -214,3 +200,12 @@ const Register = () => {
 };
 
 export default Register;
+
+const styles = StyleSheet.create({
+  socialButton: {
+    padding: Spacing,
+    backgroundColor: Colors.gray,
+    borderRadius: Spacing / 2,
+    marginHorizontal: Spacing,
+  },
+})

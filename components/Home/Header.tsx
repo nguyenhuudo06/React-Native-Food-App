@@ -11,6 +11,7 @@ import { TextInput } from "react-native";
 import Spacing from "@/constants/Spacing";
 import Colors from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 
 const Header = () => {
   return (
@@ -18,7 +19,7 @@ const Header = () => {
       <View>
         <ImageBackground
           source={require("../../assets/images/Pattern.png")}
-          style={{ width: "100%", padding: 20,}}
+          style={{ width: "100%", padding: 20 }}
         >
           <View>
             <View
@@ -28,15 +29,19 @@ const Header = () => {
               }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Image
-                  style={{
-                    width: Spacing * 4.5,
-                    height: Spacing * 4.5,
-                    borderRadius: Spacing * 3,
-                    marginRight: Spacing,
-                  }}
-                  source={require("../../assets/images/avatart-template.jpg")}
-                />
+                <TouchableOpacity
+                  onPress={() => router.push("../(tabs)/profile")}
+                >
+                  <Image
+                    style={{
+                      width: Spacing * 4.5,
+                      height: Spacing * 4.5,
+                      borderRadius: Spacing * 3,
+                      marginRight: Spacing,
+                    }}
+                    source={require("../../assets/images/avatart-template.jpg")}
+                  />
+                </TouchableOpacity>
               </View>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <TouchableOpacity style={{ marginRight: Spacing }}>

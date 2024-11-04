@@ -67,110 +67,118 @@ const Cart = () => {
   const columnSize = useColumnSize();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={{ padding: Spacing }}>
-          <CustomLayoutContainer>
-            <CustomLayoutRow style={{ marginBottom: Spacing }}>
-              {[...Array(12)].map((_, idx) => (
-                <CustomLayoutCol key={idx} size={columnSize}>
-                  <TouchableOpacity style={styles.item}>
+    // <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.scrollView}>
+      <View style={{ padding: Spacing }}>
+        <CustomLayoutContainer>
+          <CustomLayoutRow style={{ marginBottom: Spacing }}>
+            {[...Array(12)].map((_, idx) => (
+              <CustomLayoutCol key={idx} size={columnSize}>
+                <TouchableOpacity style={styles.item}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: Spacing * 0.4,
+                      marginBottom: Spacing * 0.8,
+                    }}
+                  >
+                    <Entypo name="star" size={FontSize.medium} color="orange" />
+                    <Text
+                      style={{
+                        fontSize: FontSize.xsmall,
+                        lineHeight: FontSize.xsmall * 1.2,
+                        fontFamily: "outfit-bold",
+                      }}
+                    >
+                      3.8
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      overflow: "hidden",
+                      borderRadius: Spacing,
+                    }}
+                  >
+                    <Image
+                      source={require("../../assets/images/pngegg.png")}
+                      resizeMode="contain"
+                      style={{ width: "100%", height: 80 }}
+                    />
+                  </View>
+                  <View style={{}}>
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                        fontFamily: "outfit-medium",
+                        fontSize: FontSize.medium,
+                        lineHeight: FontSize.medium * 1.2,
+                        minHeight: 2 * (FontSize.medium * 1.2),
+                      }}
+                    >
+                      Chicken burger
+                    </Text>
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                        fontFamily: "outfit-bold",
+                        color: Colors.description,
+                        opacity: 0.5,
+                        fontSize: FontSize.xsmall,
+                        lineHeight: FontSize.xsmall * 1.2,
+                        minHeight: 2 * (FontSize.xsmall * 1.2),
+                      }}
+                    >
+                      100 gr chicken + tomato + cheese
+                    </Text>
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: Spacing * 0.4,
-                        marginBottom: Spacing * 0.8,
+                        justifyContent: "space-between",
                       }}
                     >
-                      <Entypo
-                        name="star"
-                        size={FontSize.medium}
-                        color="orange"
-                      />
                       <Text
-                        style={{
-                          fontSize: FontSize.xsmall,
-                          lineHeight: FontSize.xsmall * 1.2,
-                          fontFamily: "outfit-bold",
-                        }}
-                      >
-                        3.8
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        overflow: "hidden",
-                        borderRadius: Spacing,
-                      }}
-                    >
-                      <Image
-                        source={require("../../assets/images/pngegg.png")}
-                        resizeMode="contain"
-                        style={{ width: "100%", height: 80 }}
-                      />
-                    </View>
-                    <View style={{}}>
-                      <Text
-                        numberOfLines={2}
-                        style={{
-                          fontFamily: "outfit-medium",
-                          fontSize: FontSize.medium,
-                          lineHeight: FontSize.medium * 1.2,
-                          minHeight: 2 * (FontSize.medium * 1.2),
-                        }}
-                      >
-                        Chicken burger
-                      </Text>
-                      <Text
-                        numberOfLines={2}
                         style={{
                           fontFamily: "outfit-bold",
-                          color: Colors.description,
-                          opacity: 0.5,
-                          fontSize: FontSize.xsmall,
-                          lineHeight: FontSize.xsmall * 1.2,
-                          minHeight: 2 * (FontSize.xsmall * 1.2),
+                          color: Colors.orange,
+                          fontSize: FontSize.small,
+                          
                         }}
                       >
-                        100 gr chicken + tomato + cheese
+                        VND
                       </Text>
-                      <View
+                      <TouchableOpacity>
+                        <AntDesign
+                          name="pluscircle"
+                          size={30}
+                          color={Colors.orange}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View>
+                      <Text
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                          width: "100%",
+                          fontFamily: "outfit-bold",
+                          color: Colors.orange,
+                          fontSize: FontSize.small,
+                          paddingTop: Spacing * 0.4,
                         }}
                       >
-                        <Text
-                          style={{
-                            width: "100%",
-                            fontFamily: "outfit-bold",
-                            color: Colors.orange,
-                            fontSize: FontSize.small,
-                            paddingVertical: Spacing,
-                          }}
-                        >
-                          VND {formatCurrency(100000.99)}
-                        </Text>
-                        <TouchableOpacity>
-                          <AntDesign
-                            name="pluscircle"
-                            size={FontSize.xLarge}
-                            color={Colors.orange}
-                          />
-                        </TouchableOpacity>
-                      </View>
+                        {formatCurrency(100000000.99)}
+                      </Text>
                     </View>
-                  </TouchableOpacity>
-                </CustomLayoutCol>
-              ))}
-            </CustomLayoutRow>
-          </CustomLayoutContainer>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+                  </View>
+                </TouchableOpacity>
+              </CustomLayoutCol>
+            ))}
+          </CustomLayoutRow>
+        </CustomLayoutContainer>
+      </View>
+    </ScrollView>
+    // </SafeAreaView>
   );
 };
 

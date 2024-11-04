@@ -70,7 +70,7 @@ export default function CategoryTabView() {
           />
         </View>
 
-        <View style={{ flex: 1 }}>
+        <View style={{ height: 900}}>
           <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
+    flexGrow: 1,
     backgroundColor: "#fff",
   },
   categoryList: {
@@ -115,8 +116,5 @@ const styles = StyleSheet.create({
   },
   activeText: {
     color: Colors.light,
-  },
-  tabView: {
-    marginTop: 20,
   },
 });
