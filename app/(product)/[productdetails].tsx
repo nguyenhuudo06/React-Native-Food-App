@@ -8,9 +8,14 @@ import {
   Dimensions,
   StatusBar,
 } from "react-native";
-import React from "react";
+import { TouchableOpacity, TextInput } from "react-native";
+import React, { useState } from "react";
 import Carousel from "pinar";
 import Spacing from "@/constants/Spacing";
+import { AntDesign } from "@expo/vector-icons";
+import Colors from "@/constants/Colors";
+import FontSize from "@/constants/FontSize";
+import { router } from "expo-router";
 
 const images = [
   {
@@ -30,9 +35,54 @@ const images = [
 const height = Dimensions.get("window").height;
 
 const ProductDetails = () => {
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [additional, setAdditional] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollView}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: Spacing,
+            marginVertical: Spacing * 1.4,
+          }}
+        >
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.primary,
+              padding: 10,
+              borderRadius: Spacing * 0.6,
+            }}
+            onPress={() => router.back()}
+          >
+            <AntDesign
+              name="arrowleft"
+              size={Spacing * 2}
+              color={Colors.white}
+            />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontFamily: "outfit-bold",
+              fontSize: FontSize.large,
+            }}
+          >
+            
+          </Text>
+        </View>
         <View style={styles.carouselContainer}>
           <Carousel
             style={styles.carousel}
@@ -48,6 +98,54 @@ const ProductDetails = () => {
               />
             ))}
           </Carousel>
+        </View>
+        <View style={{ padding: Spacing }}>
+          <View style={styles.productInfor}>
+            <Text style={styles.title}>Goi tron 2</Text>
+
+            <View style={styles.row}>
+              <Text style={styles.price}>88 VNĐ</Text>
+              <Text style={styles.oldPrice}>7 VNĐ</Text>
+            </View>
+
+            <Text style={styles.description}>mo ta</Text>
+
+            <Text style={styles.sectionTitle}>Select Size</Text>
+            <View style={styles.optionRow}>
+              <Text style={styles.optionText}>Normal + 99 VNĐ</Text>
+            </View>
+            <View style={styles.optionRow}>
+              <Text style={styles.optionText}>Small + 99 VNĐ</Text>
+            </View>
+
+            <Text style={styles.sectionTitle}>
+              Select Additional (Optional)
+            </Text>
+            <View style={styles.optionRow}>
+              <Text style={styles.optionText}>Them Rau Thom + 99 VNĐ</Text>
+            </View>
+
+            <Text style={styles.sectionTitle}>
+              Select Quantity (Available : 14)
+            </Text>
+            <View style={styles.quantityContainer}>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={decreaseQuantity}
+              >
+                <Text style={styles.quantityButtonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{quantity}</Text>
+              <TouchableOpacity
+                style={styles.quantityButton}
+                onPress={increaseQuantity}
+              >
+                <Text style={styles.quantityButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.totalPrice}>88 VNĐ</Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -73,7 +171,7 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing,
     marginTop: Spacing,
     borderRadius: 20,
-    overflow: "hidden"
+    overflow: "hidden",
   },
   image: {
     width: "100%",
@@ -88,6 +186,35 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   activeDotStyle: {
-    backgroundColor: "white"
-  }
+    backgroundColor: "white",
+  },
+
+  productInfor: {
+    padding: 16,
+    backgroundColor: "#fff",
+    marginTop: Spacing,
+    borderRadius: 20,
+  },
+  title: { fontSize: 24, fontWeight: "bold" },
+  row: { flexDirection: "row", alignItems: "center", marginVertical: 8 },
+  price: { fontSize: 18, fontWeight: "bold", color: "black" },
+  oldPrice: {
+    fontSize: 16,
+    color: "green",
+    textDecorationLine: "line-through",
+    marginLeft: 10,
+  },
+  description: { marginVertical: 8, color: "gray" },
+  sectionTitle: { fontWeight: "bold", fontSize: 16, marginVertical: 8 },
+  optionRow: { flexDirection: "row", alignItems: "center", marginVertical: 4 },
+  optionText: { marginLeft: 8 },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 8,
+  },
+  quantityButton: { padding: 10, backgroundColor: "#ff0000", borderRadius: 5 },
+  quantityButtonText: { color: "#fff", fontWeight: "bold" },
+  quantityText: { paddingHorizontal: 20, fontSize: 16 },
+  totalPrice: { fontSize: 20, fontWeight: "bold", marginTop: 16 },
 });

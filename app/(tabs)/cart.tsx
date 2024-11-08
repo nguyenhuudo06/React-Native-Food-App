@@ -15,6 +15,7 @@ import Colors from "@/constants/Colors";
 import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
 import FontSize from "@/constants/FontSize";
 import { formatCurrency } from "@/utils/currency";
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -74,7 +75,7 @@ const Cart = () => {
           <CustomLayoutRow style={{ marginBottom: Spacing }}>
             {[...Array(12)].map((_, idx) => (
               <CustomLayoutCol key={idx} size={columnSize}>
-                <TouchableOpacity style={styles.item}>
+                <TouchableOpacity style={styles.item} onPress={() => router.push("../(product)/1")}>
                   <View
                     style={{
                       flexDirection: "row",

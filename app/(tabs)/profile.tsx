@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -22,13 +22,18 @@ import Spacing from "@/constants/Spacing";
 import Colors from "@/constants/Colors";
 import FontSize from "@/constants/FontSize";
 import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutFunction } from "@/utils/logout";
+import { setAccessToken } from "@/utils/axios-instance";
+import { logout } from "@/redux/authSlice/authSlice";
 
 const Profile = () => {
-  const user = {
-    name: "Nguyen Huu Do",
-    username: "nguyenhuudo1206@gmail.com",
-    profilePicture: require("../../assets/images/avatart-template.jpg"),
-  };
+  const userData = useSelector((state) => state.auth)
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if(!userData.isAuthenticated) { router.push("../(auth)/login") }
+  })
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +48,7 @@ const Profile = () => {
             <View style={styles.profileImageContainer}>
               <View style={styles.profileImageBackground}>
                 <Image
-                  source={user.profilePicture}
+                  source={userData.user_avatar ?? require("../../assets/images/gray-avatar.png")}
                   style={styles.profileImage}
                   resizeMode="contain"
                 />
@@ -55,8 +60,8 @@ const Profile = () => {
                 <Ionicons name="camera" size={24} color="#007bff" />
               </TouchableOpacity>
             </View>
-            <Text style={styles.name}>{user.name}</Text>
-            <Text style={styles.username}>{user.username}</Text>
+            <Text style={styles.name}>{userData.user_name}</Text>
+            <Text style={styles.username}>{userData.email}</Text>
           </View>
           <View
             style={{
@@ -158,7 +163,12 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={ async () => {
+              await setAccessToken("");
+              await dispatch(logout());
+              router.push("../(auth)/login")
+
+            }}
             style={{
               margin: Spacing,
               backgroundColor: "#fff",
@@ -202,7 +212,8 @@ const styles = StyleSheet.create({
   profileImageBackground: {
     width: 100,
     height: 100,
-    borderRadius: 70,
+    borderRadius: 50,
+    overflow: 'hidden',
     backgroundColor: "#e0e0e0",
     justifyContent: "center",
     alignItems: "center",
@@ -211,6 +222,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 70,
+    objectFit: "cover"
   },
   editIconContainer: {
     position: "absolute",

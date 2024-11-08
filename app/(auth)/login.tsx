@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Button,
   ActivityIndicator,
+  StatusBar,
 } from "react-native";
 import React, { useState } from "react";
 import Spacing from "@/constants/Spacing";
@@ -35,8 +36,8 @@ const validationSchema = Yup.object().shape({
 const Login = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const statecontent = useSelector((state) => state.auth)
-  console.log(statecontent)
+  const statecontent = useSelector((state) => state.auth);
+  console.log(statecontent);
 
   const handleLogin = async (email: string, password: string) => {
     setLoading(true);
@@ -56,7 +57,7 @@ const Login = () => {
         throw new Error("Request failed with status " + responseProfile.status);
       }
 
-      dispatch(login(responseProfile.data))
+      dispatch(login(responseProfile.data));
 
       Toast.show({
         type: "success",
@@ -67,7 +68,7 @@ const Login = () => {
 
       setLoading(false);
 
-        router.push("../(tabs)/home");
+      router.replace("../(tabs)/home");
     } catch (error) {
       console.error(error);
 
@@ -97,7 +98,7 @@ const Login = () => {
               initialValues={{ email: "", password: "" }}
               validationSchema={validationSchema}
               onSubmit={async (values) => {
-                handleLogin(values.email, values.password);
+                await handleLogin(values.email, values.password);
               }}
             >
               {({
@@ -146,7 +147,7 @@ const Login = () => {
 
                   <View>
                     <TouchableOpacity
-                      onPress={() => router.push("./forgotPassword")}
+                      onPress={() => router.replace("./forgotPassword")}
                     >
                       <Text style={styles.forgotPasswordText}>
                         Forgot your password?
@@ -170,7 +171,7 @@ const Login = () => {
             </Formik>
 
             <TouchableOpacity
-              onPress={() => router.push("./register")}
+              onPress={() => router.replace("./register")}
               style={styles.createAccountButton}
             >
               <Text style={styles.createAccountText}>Create new account</Text>
@@ -186,16 +187,13 @@ const Login = () => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.socialButton}>
-                  <FontAwesome5
-                    name="facebook-square"
-                    color={Colors.text}
-                    size={Spacing * 2}
-                  />
+                  <FontAwesome name="facebook" color={Colors.text}
+                    size={Spacing * 2} />
                 </TouchableOpacity>
               </View>
             </View>
             <TouchableOpacity
-              onPress={() => router.push("../(tabs)/home")}
+              onPress={() => router.replace("../(tabs)/home")}
               style={styles.createAccountButton}
             >
               <Text style={styles.createAccountText}>Go to home page</Text>
@@ -212,9 +210,11 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
     flexGrow: 1,
+    backgroundColor: "#fff",
   },
   paddingView: {
     padding: Spacing * 2,
@@ -294,7 +294,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   socialButton: {
-    padding: Spacing,
+    width: 40,
+    height: 40,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: Colors.gray,
     borderRadius: Spacing / 2,
     marginHorizontal: Spacing,
