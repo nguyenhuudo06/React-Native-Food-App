@@ -9,13 +9,16 @@ import {
   StatusBar,
 } from "react-native";
 import { TouchableOpacity, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Carousel from "pinar";
 import Spacing from "@/constants/Spacing";
 import { AntDesign } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import FontSize from "@/constants/FontSize";
 import { router } from "expo-router";
+import BackButton from "@/components/Material/BackButton";
+import { callProductDetail } from "@/services/api-call";
+import Checkbox from "expo-checkbox";
 
 const images = [
   {
@@ -26,63 +29,118 @@ const images = [
     name: "image 2",
     url: "https://images.ctfassets.net/mmptj4yas0t3/7hy6BRZTRBpGIDLNe82Sq8/4f0e5ccb2eb84e2d9a4f29b081a2dd5e/cc-health-trends.jpg?w=750&h=423&fl=progressive&q=50&fm=jpg",
   },
-  {
-    name: "image 3",
-    url: "https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?resize=768,574",
-  },
 ];
 
 const height = Dimensions.get("window").height;
 
-const ProductDetails = () => {
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [additional, setAdditional] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+interface ImageOption {
+  imageId: string;
+  imageUrl: string;
+}
 
-  const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+interface DishDetail {
+  categoryId: string;
+  categoryName: string;
+  description: string;
+  dishId: string;
+  dishName: string;
+  images: ImageOption[];
+  listOptions: {
+    optionGroupId: string;
+    optionGroupName: string;
+    options: {
+      optionSelectionId: string;
+      optionName: string;
+      additionalPrice: string;
+    }[];
+  }[];
+  longDescription: string;
+  offerPrice: number;
+  price: number;
+  status: string;
+  thumbImage: string;
+  rating: number;
+  slug: string;
+  availableQuantity: number;
+}
+
+const ProductDetails = () => {
+  const [productDetails, setProductDetails] = useState<DishDetail | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState({});
+  console.log(selectedOptions);
+
+  const fetchProductDetails = async () => {
+    try {
+      const responseProductDetails = await callProductDetail(
+        "0cab16a8-f8b6-400e-a411-43b2d6e80672"
+      );
+
+      if (
+        responseProductDetails.status < 200 ||
+        responseProductDetails.status >= 300
+      ) {
+        throw new Error(
+          "Request failed with status " + responseProductDetails.status
+        );
+      }
+
+      const responseData = await responseProductDetails.data;
+      setProductDetails(responseData);
+    } catch (error) {
+      console.error("Error occurred:", error);
+    }
   };
 
-  const decreaseQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
+  useEffect(() => {
+    fetchProductDetails();
+  }, []);
+
+  const sortedOptions = useMemo(() => {
+    const options = productDetails?.listOptions || [];
+    return [...options].sort((a, b) => {
+      if (a.optionGroupName.toLowerCase() === "size") return -1;
+      if (b.optionGroupName.toLowerCase() === "size") return 1;
+      return 0;
+    });
+  }, [productDetails]);
+
+  const handleOptionChange = (
+    optionGroupId: string,
+    optionSelectionId: string,
+    isSizeGroup: boolean
+  ) => {
+    if (isSizeGroup) {
+      // Nếu là nhóm "Size", chỉ cho phép chọn 1 lựa chọn duy nhất
+      setSelectedOptions({
+        ...selectedOptions,
+        [optionGroupId]: [optionSelectionId],
+      });
+    } else {
+      // Nếu không phải nhóm "Size", có thể chọn hoặc bỏ chọn
+
+      setSelectedOptions((prevState) => {
+        const updatedState: any = { ...prevState };
+
+        if (!updatedState[optionGroupId]) {
+          updatedState[optionGroupId] = [];
+        }
+
+        if (updatedState[optionGroupId]?.includes(optionSelectionId)) {
+          updatedState[optionGroupId] = updatedState[optionGroupId].filter(
+            (id: string) => id !== optionSelectionId
+          );
+        } else {
+          updatedState[optionGroupId].push(optionSelectionId);
+        }
+        return updatedState;
+      });
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+      <BackButton />
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: Spacing,
-            marginVertical: Spacing * 1.4,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              backgroundColor: Colors.primary,
-              padding: 10,
-              borderRadius: Spacing * 0.6,
-            }}
-            onPress={() => router.back()}
-          >
-            <AntDesign
-              name="arrowleft"
-              size={Spacing * 2}
-              color={Colors.white}
-            />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontFamily: "outfit-bold",
-              fontSize: FontSize.large,
-            }}
-          >
-            
-          </Text>
-        </View>
         <View style={styles.carouselContainer}>
           <Carousel
             style={styles.carousel}
@@ -100,51 +158,69 @@ const ProductDetails = () => {
           </Carousel>
         </View>
         <View style={{ padding: Spacing }}>
-          <View style={styles.productInfor}>
-            <Text style={styles.title}>Goi tron 2</Text>
+          <View>
+            <Text>{productDetails?.dishName}</Text>
+            <Text>{productDetails?.availableQuantity}</Text>
+            <Text>{productDetails?.description}</Text>
 
-            <View style={styles.row}>
-              <Text style={styles.price}>88 VNĐ</Text>
-              <Text style={styles.oldPrice}>7 VNĐ</Text>
-            </View>
-
-            <Text style={styles.description}>mo ta</Text>
-
-            <Text style={styles.sectionTitle}>Select Size</Text>
-            <View style={styles.optionRow}>
-              <Text style={styles.optionText}>Normal + 99 VNĐ</Text>
-            </View>
-            <View style={styles.optionRow}>
-              <Text style={styles.optionText}>Small + 99 VNĐ</Text>
-            </View>
-
-            <Text style={styles.sectionTitle}>
-              Select Additional (Optional)
-            </Text>
-            <View style={styles.optionRow}>
-              <Text style={styles.optionText}>Them Rau Thom + 99 VNĐ</Text>
-            </View>
-
-            <Text style={styles.sectionTitle}>
-              Select Quantity (Available : 14)
-            </Text>
-            <View style={styles.quantityContainer}>
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={decreaseQuantity}
-              >
-                <Text style={styles.quantityButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.quantityText}>{quantity}</Text>
-              <TouchableOpacity
-                style={styles.quantityButton}
-                onPress={increaseQuantity}
-              >
-                <Text style={styles.quantityButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-
-            <Text style={styles.totalPrice}>88 VNĐ</Text>
+            {sortedOptions.map((optionGroup) => (
+              <View key={optionGroup?.optionGroupName}>
+                <View style={{ marginVertical: Spacing }}>
+                  <Text
+                    style={{
+                      fontFamily: "outfit-medium",
+                      fontSize: FontSize.medium,
+                    }}
+                  >
+                    Select {optionGroup?.optionGroupName}{" "}
+                    {optionGroup?.optionGroupName.toLocaleLowerCase() !==
+                      "size" && (
+                      <Text style={{ fontFamily: "outfit-regular" }}>
+                        (Optional)
+                      </Text>
+                    )}
+                  </Text>
+                </View>
+                {optionGroup?.options.map((optionSelection) => (
+                  <TouchableOpacity
+                    key={optionSelection.optionSelectionId}
+                    onPress={() => {
+                      handleOptionChange(
+                        optionGroup.optionGroupId,
+                        optionSelection.optionSelectionId,
+                        optionGroup.optionGroupName.toLowerCase() === "size"
+                      );
+                    }}
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      paddingVertical: Spacing * 0.4,
+                      paddingHorizontal: Spacing,
+                    }}
+                  >
+                    <View
+                      style={{ flexDirection: "row", alignItems: "center" }}
+                    >
+                      <Checkbox
+                        value={selectedOptions[optionGroup?.optionGroupId]?.includes(optionSelection.optionSelectionId) ? true : false}
+                        color={true ? Colors.primary : Colors.gray}
+                        onValueChange={() => {}}
+                        style={{ marginRight: Spacing }}
+                      />
+                      <Text style={{ fontFamily: "outfit-regular" }}>
+                        {optionSelection?.optionName}
+                      </Text>
+                    </View>
+                    <View>
+                      <Text style={{ fontFamily: "outfit-regular" }}>
+                        + {optionSelection?.additionalPrice} VND
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -158,20 +234,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: StatusBar.currentHeight,
+    backgroundColor: "white",
   },
   scrollView: {
     flexGrow: 1,
   },
-  carousel: {
-    width: "100%",
-    height: "100%",
-  },
   carouselContainer: {
-    height: (height - 20) / 2,
+    height: (height - 20) / 2.5,
     marginHorizontal: Spacing,
     marginTop: Spacing,
     borderRadius: 20,
     overflow: "hidden",
+  },
+  carousel: {
+    width: "100%",
+    height: "100%",
   },
   image: {
     width: "100%",
@@ -188,33 +265,4 @@ const styles = StyleSheet.create({
   activeDotStyle: {
     backgroundColor: "white",
   },
-
-  productInfor: {
-    padding: 16,
-    backgroundColor: "#fff",
-    marginTop: Spacing,
-    borderRadius: 20,
-  },
-  title: { fontSize: 24, fontWeight: "bold" },
-  row: { flexDirection: "row", alignItems: "center", marginVertical: 8 },
-  price: { fontSize: 18, fontWeight: "bold", color: "black" },
-  oldPrice: {
-    fontSize: 16,
-    color: "green",
-    textDecorationLine: "line-through",
-    marginLeft: 10,
-  },
-  description: { marginVertical: 8, color: "gray" },
-  sectionTitle: { fontWeight: "bold", fontSize: 16, marginVertical: 8 },
-  optionRow: { flexDirection: "row", alignItems: "center", marginVertical: 4 },
-  optionText: { marginLeft: 8 },
-  quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 8,
-  },
-  quantityButton: { padding: 10, backgroundColor: "#ff0000", borderRadius: 5 },
-  quantityButtonText: { color: "#fff", fontWeight: "bold" },
-  quantityText: { paddingHorizontal: 20, fontSize: 16 },
-  totalPrice: { fontSize: 20, fontWeight: "bold", marginTop: 16 },
 });

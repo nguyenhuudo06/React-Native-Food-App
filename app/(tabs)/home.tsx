@@ -6,7 +6,7 @@ import Category from "../../components/Home/Category";
 import { StyleSheet, SafeAreaView, ScrollView, StatusBar } from "react-native";
 import Spacing from "@/constants/Spacing";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import Cart from "./cart";
+import ProductList from "@/components/Product/ProductList";
 
 const Home = () => {
   return (
@@ -20,7 +20,7 @@ const Home = () => {
           {/* Category */}
           <Category />
           {/* Products */}
-          <Cart />
+          <ProductList />
           
         </View>
       </ScrollView>

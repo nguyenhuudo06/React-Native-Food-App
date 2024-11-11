@@ -33,3 +33,15 @@ export const callForgotPassword = (params: string) => {
 export const callUpdateProfile = (fullName: string, email: string) => {
   return instance.put('/api/v1/client/user/update', { fullName, email });
 };
+
+export const callAddress = (userId: string) => {
+  return instance.get(`/api/v1/client/address/get-all-address?userId=${userId}&pageNo=0&pageSize=10&sortBy=createdAt&sortDir=asc`);
+};
+
+export const callDeleteAddress = (addressId: string) => {
+  return instance.delete(`/api/v1/client/address/delete/${addressId}`);
+};
+
+export const callProductDetail = (productId: string) => {
+  return instance.get(`/api/v1/auth/guest/get-dish-by-id/${productId}`)
+}

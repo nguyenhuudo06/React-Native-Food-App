@@ -70,7 +70,7 @@ export default function CategoryTabView() {
           />
         </View>
 
-        <View style={{ height: 900}}>
+        <View style={{ height: layout.height * 0.9 }}>
           <TabView
             navigationState={{ index, routes }}
             renderScene={renderScene}
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   categoryList: {
+    minHeight: layout.height * 0.05,
     paddingVertical: Spacing,
     paddingHorizontal: Spacing,
   },

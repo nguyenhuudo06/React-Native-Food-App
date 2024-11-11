@@ -234,11 +234,11 @@ const styles = StyleSheet.create({
     maxWidth: "60%",
     textAlign: "center",
   },
-  inputContainer: {
-    marginVertical: Spacing * 3,
-  },
   showError: {
     height: 20,
+  },
+  inputContainer: {
+    marginVertical: Spacing * 3,
   },
   input: {
     fontFamily: "outfit-regular",

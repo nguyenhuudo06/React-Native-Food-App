@@ -1,8 +1,8 @@
-const white = "white";
+const white = "#FFF";
 const black = "#000";
 const dark = "#626262";
 const blue = "#1F41BB";
-const gray = "#ECECEC";
+const gray = "#3B3B3B5A";
 const lightBlue = "#f1f4ff";
 const orange = "#F76D02";
 const description = "#3B3B3B";
@@ -12,8 +12,8 @@ export default {
   dark: dark,
   text: black,
   background: white,
-  // primary: blue,
-  primary: orange,
+  primary: "#81C784",
+  primary_10: "#81C7841A",
   orange: orange,
   onPrimary: white,
   active: blue,
@@ -21,6 +21,8 @@ export default {
   lightPrimary: lightBlue,
   light: lightBlue,
   gray: gray,
+  addressGray: "#BFC3BF2A",
   white: white,
   description: description,
+  danger: "#EB3223"
 };
