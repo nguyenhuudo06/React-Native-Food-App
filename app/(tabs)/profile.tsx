@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -28,18 +28,34 @@ import { setAccessToken } from "@/utils/axios-instance";
 import { logout } from "@/redux/authSlice/authSlice";
 
 const Profile = () => {
-  const userData = useSelector((state) => state.auth)
+  const userData = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if(!userData.isAuthenticated) { router.push("../(auth)/login") }
-  })
+    setIsMounted(true); // Mark layout as mounted
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && userData && !userData.isAuthenticated) {
+      router.replace("../(auth)/login");
+    }
+  }, [userData, isMounted]);
+
+  if (!isMounted) return null;
 
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
         source={require("../../assets/images/background-profile.jpg")}
-        style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0, zIndex: 0 }}
+        style={{
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          zIndex: 0,
+        }}
         imageStyle={{ opacity: 0.2 }}
       />
       <ScrollView style={styles.scrollView}>
@@ -48,7 +64,10 @@ const Profile = () => {
             <View style={styles.profileImageContainer}>
               <View style={styles.profileImageBackground}>
                 <Image
-                  source={userData.user_avatar ?? require("../../assets/images/gray-avatar.png")}
+                  source={
+                    userData.user_avatar ??
+                    require("../../assets/images/gray-avatar.png")
+                  }
                   style={styles.profileImage}
                   resizeMode="contain"
                 />
@@ -163,11 +182,10 @@ const Profile = () => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={ async () => {
+            onPress={async () => {
               await setAccessToken("");
               await dispatch(logout());
-              router.push("../(auth)/login")
-
+              router.push("../(auth)/login");
             }}
             style={{
               margin: Spacing,
@@ -213,7 +231,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    overflow: 'hidden',
+    overflow: "hidden",
     backgroundColor: "#e0e0e0",
     justifyContent: "center",
     alignItems: "center",
@@ -222,7 +240,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 70,
-    objectFit: "cover"
+    objectFit: "cover",
   },
   editIconContainer: {
     position: "absolute",

@@ -1,6 +1,8 @@
+import Spacing from "@/constants/Spacing";
 import store from "@/redux/store";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import { Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast, { BaseToast } from "react-native-toast-message";
 import { Provider } from "react-redux";
@@ -21,27 +23,44 @@ export default function RootLayout() {
         text1Style={{
           fontSize: 18,
           fontWeight: "bold",
-          fontFamily: "outfit-medium", // Font chữ tùy chỉnh cho tiêu đề
+          fontFamily: "outfit-medium",
         }}
         text2Style={{
           fontSize: 16,
-          fontFamily: "outfit-regular", // Font chữ tùy chỉnh cho nội dung
+          fontFamily: "outfit-regular",
         }}
       />
     ),
     error: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: "red" }}
-        contentContainerStyle={{ paddingHorizontal: 15 }}
+        style={{ padding: Spacing, borderLeftWidth: 0, backgroundColor: "#0B192C", borderRadius: Spacing * 2, maxWidth: 300 }}
+        contentContainerStyle={{ paddingHorizontal: Spacing }}
         text1Style={{
-          fontSize: 18,
-          fontWeight: "bold",
-          fontFamily: "outfit-medium", // Font chữ tùy chỉnh cho tiêu đề
+          fontSize: 16,
+          fontWeight: "medium",
+          fontFamily: "outfit-regular",
+          color: "#fff"
         }}
         text2Style={{
           fontSize: 16,
-          fontFamily: "outfit-regular", // Font chữ tùy chỉnh cho nội dung
+          fontFamily: "outfit-regular",
+        }}
+      />
+    ),
+    warning: (props) => (
+      <BaseToast
+        {...props}
+        style={{ borderLeftColor: "yellow" }}
+        contentContainerStyle={{ paddingHorizontal: 15 }}
+        text1Style={{
+          fontSize: 18,
+          // fontWeight: "bold",
+          fontFamily: "outfit-medium",
+        }}
+        text2Style={{
+          fontSize: 16,
+          fontFamily: "outfit-regular",
         }}
       />
     ),
@@ -92,17 +111,14 @@ export default function RootLayout() {
             />
 
             <Stack.Screen
-              name="(product)/[productdetails]"
+              name="(product)/product/[productId]"
               options={{ headerShown: false }}
             />
 
-            <Stack.Screen
-              name="(test)/test"
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="(test)/test" options={{ headerShown: false }} />
           </Stack>
 
-          <Toast />
+          <Toast config={toastConfig} />
         </Provider>
       </GestureHandlerRootView>
     </>

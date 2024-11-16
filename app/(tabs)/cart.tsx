@@ -10,7 +10,7 @@ import {
   TextInput,
   ImageBackground,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import ProductList from "@/components/Product/ProductList";
 import BackButton from "@/components/Material/BackButton";
 import FontSize from "@/constants/FontSize";
@@ -20,6 +20,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { formatCurrency } from "@/utils/currency";
 
 const Cart = () => {
+  const [value, setValue] = useState<number>(1);
+  const handleInputChange = (text) => {
+    // Lọc chỉ cho phép nhập số
+    const numericValue = text.replace(/[^0-9]/g, "");
+    setValue(numericValue);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
@@ -29,6 +36,7 @@ const Cart = () => {
             <Text style={styles.titlePage}>Cart</Text>
           </View>
           {/* Product */}
+          {}
           <View
             style={{
               flexDirection: "row",
@@ -61,13 +69,30 @@ const Cart = () => {
               />
             </View>
             <View style={{ flex: 1, marginRight: Spacing }}>
-              <Text numberOfLines={1} style={{ width: "100%", fontFamily: "outfit-medium" }}>
+              <Text
+                numberOfLines={1}
+                style={{ width: "100%", fontFamily: "outfit-medium" }}
+              >
                 Chicken Burger
               </Text>
-              <Text numberOfLines={1} style={{ width: "100%", fontFamily: "outfit-medium", color: Colors.gray }}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  width: "100%",
+                  fontFamily: "outfit-medium",
+                  color: Colors.gray,
+                }}
+              >
                 Burger Factory LTD
               </Text>
-              <Text numberOfLines={1} style={{ width: "100%", fontFamily: "outfit-bold", color: Colors.primary }}>
+              <Text
+                numberOfLines={1}
+                style={{
+                  width: "100%",
+                  fontFamily: "outfit-bold",
+                  color: Colors.primary,
+                }}
+              >
                 VND {formatCurrency(20000)}
               </Text>
             </View>
@@ -85,17 +110,19 @@ const Cart = () => {
                 />
               </TouchableOpacity>
               <TouchableOpacity>
-                <Text
+                <TextInput
+                  maxLength={4}
+                  onChangeText={handleInputChange}
+                  keyboardType="numeric"
                   numberOfLines={1}
+                  value={value}
                   style={{
                     fontFamily: "outfit-medium",
-                    width: 48,
+                    width: 50,
                     paddingHorizontal: Spacing * 0.4,
                     textAlign: "center",
                   }}
-                >
-                  10
-                </Text>
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
@@ -219,7 +246,7 @@ const Cart = () => {
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: FontSize.large,
+                  fontSize: FontSize.medium,
                   fontFamily: "outfit-bold",
                 }}
               >
@@ -228,7 +255,7 @@ const Cart = () => {
               <Text
                 style={{
                   color: Colors.white,
-                  fontSize: FontSize.large,
+                  fontSize: FontSize.medium,
                   fontFamily: "outfit-bold",
                 }}
               >
@@ -271,7 +298,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   signInButton: {
-    padding: Spacing * 2,
+    padding: Spacing * 1.6,
     backgroundColor: Colors.white,
     marginTop: Spacing * 2,
     borderRadius: Spacing,
@@ -281,6 +308,6 @@ const styles = StyleSheet.create({
     fontFamily: "outfit-bold",
     textAlign: "center",
     color: Colors.primary,
-    fontSize: FontSize.large,
+    fontSize: FontSize.medium,
   },
 });

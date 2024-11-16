@@ -1,80 +1,147 @@
 import {
-    View,
-    Text,
-    TouchableOpacity,
-    Dimensions,
-    StyleSheet,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    Image,
-  } from "react-native";
-  import React from "react";
-  import Spacing from "@/constants/Spacing";
-  import Colors from "@/constants/Colors";
-  import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
-  import FontSize from "@/constants/FontSize";
-  import { formatCurrency } from "@/utils/currency";
-  import { router } from "expo-router";
-  
+  View,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Image,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import Spacing from "@/constants/Spacing";
+import Colors from "@/constants/Colors";
+import { AntDesign, Entypo, FontAwesome } from "@expo/vector-icons";
+import FontSize from "@/constants/FontSize";
+import { formatCurrency } from "@/utils/currency";
+import { router } from "expo-router";
+import Toast from "react-native-toast-message";
+import { callAllProduct } from "@/services/api-call";
+
+const { width } = Dimensions.get("window");
+
+const colWidths = {
+  1: "100%",
+  2: "50%",
+  3: "33.33%",
+  4: "25%",
+};
+
+const useColumnSize = () => {
   const { width } = Dimensions.get("window");
-  
-  const colWidths = {
-    1: "100%",
-    2: "50%",
-    3: "33.33%",
-    4: "25%",
-  };
-  
-  const useColumnSize = () => {
-    const { width } = Dimensions.get("window");
-  
-    if (width <= 360) {
-      return 1;
-    } else if (width <= 768) {
-      return 2;
-    } else {
-      return 4;
+
+  if (width <= 360) {
+    return 1;
+  } else if (width <= 768) {
+    return 2;
+  } else {
+    return 4;
+  }
+};
+
+const CustomLayoutContainer = ({ children, style }) => {
+  return (
+    <View style={[styles["custom-layout-container"], style]}>{children}</View>
+  );
+};
+
+const CustomLayoutRow = ({ children, style }) => {
+  return <View style={[styles["custom-layout-row"], style]}>{children}</View>;
+};
+
+const CustomLayoutCol = ({ children, size, style }) => {
+  return (
+    <View
+      style={[
+        styles["custom-layout-col"],
+        {
+          flexBasis: colWidths[size] || colWidths[1],
+        },
+        style,
+      ]}
+    >
+      {children}
+    </View>
+  );
+};
+
+const ProductList = () => {
+  const columnSize = useColumnSize();
+  const [productList, setProductList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const renderCountRef = useRef(0);
+  renderCountRef.current += 1;
+  console.log("run on the beach: ", renderCountRef);
+
+  const handleGetProductLists = async (page: number) => {
+    setLoading(true);
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(1);
+      }, 3000);
+    });
+
+    try {
+      const responseGetProductLists = await callAllProduct(page);
+
+      if (
+        responseGetProductLists.status < 200 ||
+        responseGetProductLists.status >= 300
+      ) {
+        throw new Error(
+          "Request failed with status " + responseGetProductLists.status
+        );
+      }
+
+      setProductList((prev) => [
+        ...prev,
+        ...responseGetProductLists?.data?._embedded?.dishResponseList,
+      ]);
+      if (
+        responseGetProductLists?.data?.page?.number <
+        responseGetProductLists?.data?.page?.totalPages - 1
+      )
+        setHasMore(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-  
-  const CustomLayoutContainer = ({ children, style }) => {
-    return (
-      <View style={[styles["custom-layout-container"], style]}>{children}</View>
-    );
+
+  useEffect(() => {
+    handleGetProductLists(pageNumber);
+  }, [pageNumber]);
+
+  const loadMoreFc = () => {
+    // if (hasMore && !loading) {
+    //   setPageNumber((prevPage) => prevPage + 1);
+    // }
+    console.log("Run flat list");
   };
-  
-  const CustomLayoutRow = ({ children, style }) => {
-    return <View style={[styles["custom-layout-row"], style]}>{children}</View>;
-  };
-  
-  const CustomLayoutCol = ({ children, size, style }) => {
-    return (
-      <View
-        style={[
-          styles["custom-layout-col"],
-          {
-            flexBasis: colWidths[size] || colWidths[1],
-          },
-          style,
-        ]}
-      >
-        {children}
-      </View>
-    );
-  };
-  
-  const ProductList = () => {
-    const columnSize = useColumnSize();
-  
-    return (
-      <ScrollView style={styles.scrollView}>
-        <View style={{ padding: Spacing }}>
-          <CustomLayoutContainer>
-            <CustomLayoutRow style={{ marginBottom: Spacing }}>
-              {[...Array(12)].map((_, idx) => (
-                <CustomLayoutCol key={idx} size={columnSize}>
-                  <TouchableOpacity style={styles.item} onPress={() => router.push("../(product)/1")}>
+
+  return (
+    <ScrollView style={styles.scrollView}>
+      <View style={{ padding: Spacing }}>
+        <CustomLayoutContainer>
+          <CustomLayoutRow style={{ marginBottom: Spacing }}>
+            <FlatList
+              data={productList}
+              numColumns={columnSize}
+              renderItem={({ item }) => (
+                <CustomLayoutCol key={item.dishId} size={columnSize}>
+                  <TouchableOpacity
+                    style={styles.item}
+                    onPress={() =>
+                      router.push(`../(product)/product/${item?.dishId}`)
+                    }
+                  >
                     <View
                       style={{
                         flexDirection: "row",
@@ -83,7 +150,11 @@ import {
                         marginBottom: Spacing * 0.8,
                       }}
                     >
-                      <Entypo name="star" size={FontSize.medium} color="orange" />
+                      <Entypo
+                        name="star"
+                        size={FontSize.medium}
+                        color="orange"
+                      />
                       <Text
                         style={{
                           fontSize: FontSize.xsmall,
@@ -91,7 +162,7 @@ import {
                           fontFamily: "outfit-bold",
                         }}
                       >
-                        3.8
+                        {item?.rating ?? "No ratings"}
                       </Text>
                     </View>
                     <View
@@ -99,11 +170,12 @@ import {
                         justifyContent: "center",
                         overflow: "hidden",
                         borderRadius: Spacing,
+                        marginBottom: Spacing,
                       }}
                     >
                       <Image
-                        source={require("../../assets/images/pngegg.png")}
-                        resizeMode="contain"
+                        source={{ uri: item?.thumbImage }}
+                        resizeMode="cover"
                         style={{ width: "100%", height: 80 }}
                       />
                     </View>
@@ -117,7 +189,7 @@ import {
                           minHeight: 2 * (FontSize.medium * 1.2),
                         }}
                       >
-                        Chicken burger
+                        {item?.dishName}
                       </Text>
                       <Text
                         numberOfLines={2}
@@ -130,7 +202,7 @@ import {
                           minHeight: 2 * (FontSize.xsmall * 1.2),
                         }}
                       >
-                        100 gr chicken + tomato + cheese
+                        {item?.categoryName}
                       </Text>
                       <View
                         style={{
@@ -144,7 +216,6 @@ import {
                             fontFamily: "outfit-bold",
                             color: Colors.orange,
                             fontSize: FontSize.small,
-                            
                           }}
                         >
                           VND
@@ -173,45 +244,60 @@ import {
                     </View>
                   </TouchableOpacity>
                 </CustomLayoutCol>
-              ))}
-            </CustomLayoutRow>
-          </CustomLayoutContainer>
-        </View>
-      </ScrollView>
-    );
-  };
-  
-  const styles = StyleSheet.create({
-    scrollView: {
-      marginBottom: 80
-    },
-    "custom-layout-container": {
-      width: "100%",
-    },
-    "custom-layout-row": {
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "flex-start",
-      marginHorizontal: -(Spacing / 2),
-    },
-    "custom-layout-col": {
-      paddingHorizontal: Spacing / 2,
-      marginBottom: Spacing,
-    },
-    item: {
-      paddingHorizontal: Spacing * 1.2,
-      paddingVertical: Spacing * 0.8,
-      borderRadius: Spacing,
-      backgroundColor: Colors.white,
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.2,
-      shadowRadius: 6,
-      elevation: 5,
-    },
-    text: {
-      color: Colors.text,
-    },
-  });
-  
-  export default ProductList;
-  
+              )}
+              keyExtractor={(item) => item.dishId.toString()}
+              onEndReached={loadMoreFc}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={() => (
+                <View style={{ padding: Spacing, alignItems: "center" }}>
+                  <Text
+                    style={{ fontFamily: "outfit-medium", color: Colors.gray }}
+                  >
+                    End of List
+                  </Text>
+                  {loading && (
+                    <ActivityIndicator size="large" color="#00ff00" />
+                  )}
+                </View>
+              )}
+            />
+          </CustomLayoutRow>
+        </CustomLayoutContainer>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  scrollView: {
+    marginBottom: 80,
+  },
+  "custom-layout-container": {
+    width: "100%",
+  },
+  "custom-layout-row": {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    marginHorizontal: -(Spacing / 2),
+  },
+  "custom-layout-col": {
+    paddingHorizontal: Spacing / 2,
+    marginBottom: Spacing,
+  },
+  item: {
+    paddingHorizontal: Spacing * 1.2,
+    paddingVertical: Spacing * 0.8,
+    borderRadius: Spacing,
+    backgroundColor: Colors.white,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 5,
+  },
+  text: {
+    color: Colors.text,
+  },
+});
+
+export default ProductList;

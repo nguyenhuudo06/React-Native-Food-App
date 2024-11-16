@@ -14,6 +14,8 @@ import FontSize from "@/constants/FontSize";
 import Colors from "@/constants/Colors";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { callAddress, callDeleteAddress } from "@/services/api-call";
+import { useDispatch, useSelector } from "react-redux";
+import { router } from "expo-router";
 
 interface Address {
   id: string;
@@ -32,6 +34,7 @@ interface Address {
 }
 
 const Address = () => {
+
   const [addressList, setAddressList] = useState<Address[]>([]);
 
   const fetchState = async () => {
@@ -111,7 +114,7 @@ const Address = () => {
 
           <View>
             {addressList.map((item) => (
-              <TouchableOpacity key={item.id} >
+              <TouchableOpacity key={item.id}>
                 <View
                   style={{
                     backgroundColor: Colors.addressGray,
@@ -169,7 +172,7 @@ const Address = () => {
                       />
                     </TouchableOpacity>
                     <TouchableOpacity
-                     onPress={() => deleteAdress(item.id)}
+                      onPress={() => deleteAdress(item.id)}
                       style={{
                         padding: Spacing * 0.6,
                         backgroundColor: Colors.primary_10,

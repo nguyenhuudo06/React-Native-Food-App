@@ -42,6 +42,18 @@ export const callDeleteAddress = (addressId: string) => {
   return instance.delete(`/api/v1/client/address/delete/${addressId}`);
 };
 
+export const callAllProduct = async (pageNumber: number) => {
+  return instance.get(`/api/v1/auth/guest/get-all-dishes?pageNo=${pageNumber}&pageSize=2&sortBy=dishName&sortDir=asc`);
+};
+
 export const callProductDetail = (productId: string) => {
   return instance.get(`/api/v1/auth/guest/get-dish-by-id/${productId}`)
 }
+
+export const callGetAllDishes = async (query: string) => {
+  return instance.get(`/api/v1/auth/guest/get-all-dishes?${query}`);
+};
+
+export const callGetDishDetail = async (dishId: string) => {
+  return instance.get(`/api/v1/auth/guest/get-dish-by-id/${dishId}`);
+};
