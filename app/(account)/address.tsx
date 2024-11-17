@@ -76,6 +76,7 @@ const Address = () => {
       console.error("Error occurred:", error);
     }
   };
+
   useEffect(() => {
     fetchState();
   }, []);
@@ -88,6 +89,7 @@ const Address = () => {
           <View style={{ marginBottom: Spacing }}>
             <Text style={styles.titlePage}>Address</Text>
           </View>
+          
           <TouchableOpacity
             style={{
               backgroundColor: Colors.primary_10,

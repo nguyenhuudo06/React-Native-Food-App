@@ -73,6 +73,9 @@ const ProductDetails = () => {
   const [selectedOptions, setSelectedOptions] = useState<{
     [key: string]: { name: string; price: number; optionSelectionId: string }[];
   }>({});
+
+  console.log("selectedOptions: ", selectedOptions);
+
   const dispatch = useDispatch();
   const orderState = useSelector((state: RootState) => state.order);
   const [hasAddedToCart, setHasAddedToCart] = useState(false);
@@ -365,6 +368,7 @@ const ProductDetails = () => {
       return 0;
     });
   }, [dishDetail?.listOptions]);
+  console.log("sortedOptions: ", sortedOptions);
 
   if (loading) {
     return <Text>Loading UI</Text>;
@@ -580,6 +584,20 @@ const ProductDetails = () => {
                       <Text style={{ fontFamily: "outfit-regular" }}>
                         {option.optionName}
                       </Text>
+
+                      {/* <Text>
+                        {selectedOptions[optionGroup.optionGroupId] &&
+                        (selectedOptions[optionGroup.optionGroupId].find(
+                          (optionSelection) =>
+                            optionSelection.optionSelectionId ==
+                            option.optionSelectionId
+                        )
+                          ? true
+                          : false)
+                          ? "Chon"
+                          : "Khong"}
+                      </Text> */}
+
                       <Text style={{ fontFamily: "outfit-regular" }}>
                         + {Number(option.additionalPrice).toLocaleString()} VND
                       </Text>

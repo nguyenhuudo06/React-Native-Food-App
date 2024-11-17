@@ -43,7 +43,7 @@ export const callDeleteAddress = (addressId: string) => {
 };
 
 export const callAllProduct = async (pageNumber: number) => {
-  return instance.get(`/api/v1/auth/guest/get-all-dishes?pageNo=${pageNumber}&pageSize=2&sortBy=dishName&sortDir=asc`);
+  return instance.get(`/api/v1/auth/guest/get-all-dishes?pageNo=${pageNumber}&pageSize=6&sortBy=dishName&sortDir=asc`);
 };
 
 export const callProductDetail = (productId: string) => {
@@ -56,4 +56,8 @@ export const callGetAllDishes = async (query: string) => {
 
 export const callGetDishDetail = async (dishId: string) => {
   return instance.get(`/api/v1/auth/guest/get-dish-by-id/${dishId}`);
+};
+
+export const callGetAllCouponNotUsedByUserId = async (query: string) => {
+  return instance.get(`/api/v1/auth/guest/get-all-coupons-not-used-by-user?${query}`);
 };

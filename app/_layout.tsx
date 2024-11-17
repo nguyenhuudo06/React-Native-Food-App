@@ -18,12 +18,19 @@ export default function RootLayout() {
     success: (props) => (
       <BaseToast
         {...props}
-        style={{ borderLeftColor: "green" }}
+        style={{
+          padding: Spacing,
+          borderLeftWidth: 0,
+          backgroundColor: "#0B192C",
+          borderRadius: Spacing * 2,
+          maxWidth: 300,
+        }}
         contentContainerStyle={{ paddingHorizontal: 15 }}
         text1Style={{
-          fontSize: 18,
-          fontWeight: "bold",
-          fontFamily: "outfit-medium",
+          fontSize: 16,
+          fontWeight: "medium",
+          fontFamily: "outfit-regular",
+          color: "#fff",
         }}
         text2Style={{
           fontSize: 16,
@@ -34,13 +41,19 @@ export default function RootLayout() {
     error: (props) => (
       <BaseToast
         {...props}
-        style={{ padding: Spacing, borderLeftWidth: 0, backgroundColor: "#0B192C", borderRadius: Spacing * 2, maxWidth: 300 }}
+        style={{
+          padding: Spacing,
+          borderLeftWidth: 0,
+          backgroundColor: "#0B192C",
+          borderRadius: Spacing * 2,
+          maxWidth: 300,
+        }}
         contentContainerStyle={{ paddingHorizontal: Spacing }}
         text1Style={{
           fontSize: 16,
           fontWeight: "medium",
           fontFamily: "outfit-regular",
-          color: "#fff"
+          color: "#fff",
         }}
         text2Style={{
           fontSize: 16,
@@ -116,6 +129,15 @@ export default function RootLayout() {
             />
 
             <Stack.Screen name="(test)/test" options={{ headerShown: false }} />
+
+            <Stack.Screen
+              name="(task)/checkout"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="(task)/orderSuccess"
+              options={{ headerShown: false }}
+            />
           </Stack>
 
           <Toast config={toastConfig} />

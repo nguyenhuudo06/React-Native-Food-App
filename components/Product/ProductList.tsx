@@ -75,9 +75,9 @@ const ProductList = () => {
   const [pageNumber, setPageNumber] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
-  const renderCountRef = useRef(0);
-  renderCountRef.current += 1;
-  console.log("run on the beach: ", renderCountRef);
+  // const renderCountRef = useRef(0);
+  // renderCountRef.current += 1;
+  // console.log("Render: ", renderCountRef);
 
   const handleGetProductLists = async (page: number) => {
     setLoading(true);
